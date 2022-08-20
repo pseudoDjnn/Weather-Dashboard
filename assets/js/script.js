@@ -38,7 +38,7 @@ let getWeatherData = function (search) {
       if (!historyContainer) historyContainer = [];
 
       let alreadyIn = false;
-      console.log(historyContainer);
+
       historyContainer.forEach(function (item) {
         let name = item.name;
         if (name === search) {
@@ -51,13 +51,15 @@ let getWeatherData = function (search) {
         // add JSON to new object
         historyContainer.push({
           name: search,
-          data: data,
+          data: data.weather[0].icon,
           temperature: data.main.temp,
           wind: data.wind.speed,
           humidity: data.main.humidity,
+          // uvi: data.current.uvi,
         });
       }
       localStorage.setItem("search", JSON.stringify(historyContainer));
+      console.log(historyContainer);
       displayWeather(data, search);
       return fetch(
         `https://api.openweathermap.org/data/2.5/onecall?lat=${data.coord.lat}&lon=${data.coord.lon}&appid=${key}`
@@ -67,14 +69,14 @@ let getWeatherData = function (search) {
       return res.json();
     })
     .then(function (data) {
-      let secHistoryContainer = JSON.parse(localStorage.getItem("search"));
-      if (!secHistoryContainer) secHistoryContainer = [];
+      let historyContainer = JSON.parse(localStorage.getItem("search"));
+      if (!historyContainer) historyContainer = [];
 
       let alreadyIn = false;
-      console.log(secHistoryContainer);
-      secHistoryContainer.forEach(function (item) {
-        let nameUvi = item.name;
-        if (nameUvi === search) {
+
+      historyContainer.forEach(function (item) {
+        let name = item.uvi;
+        if (name === search) {
           alreadyIn = true;
         }
       });
@@ -82,15 +84,16 @@ let getWeatherData = function (search) {
       // no match
       if (!alreadyIn) {
         // add JSON to new object
-        secHistoryContainer.push({
-          // name: search,
+        historyContainer.push({
+          days: data.daily[0],
           uvi: data.current.uvi,
           // temperature: data.main.temp,
           // wind: data.wind.speed,
           // humidity: data.main.humidity,
         });
       }
-      localStorage.setItem("search", JSON.stringify(secHistoryContainer));
+      localStorage.setItem("search", JSON.stringify(historyContainer));
+      console.log(historyContainer);
 
       displayWeather(data, search);
       // console.log(data, search);
@@ -101,35 +104,35 @@ let getWeatherData = function (search) {
     .catch(function (err) {
       alert("ERROR!");
     });
-};
 
-let displayWeather = function (weather, searchCity) {
-  console.log(weather);
-  console.log(searchCity);
-  weatherContainerEl.textContent = "";
-  weatherSearchTermEl.textContent = searchCity;
+  let displayWeather = function (weather, searchCity) {
+    console.log(weather);
+    console.log(searchCity);
+    weatherContainerEl.textContent = "";
+    weatherSearchTermEl.textContent = searchCity;
 
-  // loop over repos
-  for (let i = 0; i < weather.length; i++) {
-    // format repo name
-    let tempName = weather[i].data.coord + "/" + weather[i].historyContainer;
-    console.log(weather[i]);
+    // loop over repos
+    for (let i = 0; i < weather.length; i++) {
+      // format repo name
+      let tempName = weather[i].days + "/" + weather[i].historyContainer;
+      console.log(weather[i]);
 
-    // // create a container for each repo
-    let weatherEl = document.createElement("div");
-    weatherEl.classList =
-      "list-item flex-row justify-space-between align-center";
+      // // create a container for each repo
+      let weatherEl = document.createElement("div");
+      weatherEl.classList =
+        "card list-item flex-row justify-space-between align-center";
 
-    // // create a span element to hold repository name
-    let titleEl = document.createElement("p");
-    titleEl.textContent = tempName;
+      // // create a span element to hold repository name
+      let titleEl = document.createElement("p");
+      titleEl.textContent = tempName;
 
-    // // append to container
-    weatherEl.appendChild(titleEl);
+      // // append to container
+      weatherEl.appendChild(titleEl);
 
-    // // append container to the dom
-    weatherContainerEl.appendChild(weatherEl);
-  }
+      // // append container to the dom
+      weatherContainerEl.appendChild(weatherEl);
+    }
+  };
 };
 
 cityFormEl.addEventListener("submit", clickHandler);
