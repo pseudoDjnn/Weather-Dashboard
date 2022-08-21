@@ -2,10 +2,10 @@
 // let cityInputEl = document.querySelector("#enter-city");
 let cityFormEl = document.querySelector("#user-form");
 let cityInputEl = document.querySelector("#cityname");
-let weatherContainerEl = document.querySelector("#weather-container");
+let weatherContainerEl = document.querySelector("#weathers-container");
 let weatherSearchTermEl = document.querySelector("#weather-search-term");
 
-let historyContainer = JSON.parse(localStorage.getItem("search"));
+let history = JSON.parse(localStorage.getItem("search")) || [];
 
 // let saveHistory = function () {
 // };
@@ -26,23 +26,24 @@ let clickHandler = function (event) {
   }
 };
 
-let getWeatherData = function (search) {
+let getWeatherData = function (city) {
   let key = "8a42d43f7d7dc180da5b1e51890e67dc";
-  let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${search}&appid=${key}&units=imperial`;
+  let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}&units=imperial`;
 
   fetch(apiUrl)
     .then(function (res) {
+      // console.log(res);
       return res.json();
     })
     .then(function (data) {
-      let historyContainer = JSON.parse(localStorage.getItem("search"));
-      if (!historyContainer) historyContainer = [];
+      let history = JSON.parse(localStorage.getItem("search"));
+      if (!history) history = [];
 
       let alreadyIn = false;
 
-      historyContainer.forEach(function (data) {
+      history.forEach(function (data) {
         let name = data.name;
-        if (name === search) {
+        if (name === city) {
           alreadyIn = true;
         }
       });
@@ -50,8 +51,8 @@ let getWeatherData = function (search) {
       // no match
       if (!alreadyIn) {
         // add JSON to new object
-        historyContainer.push({
-          name: search,
+        history.push({
+          name: city,
           data: data.weather[0].icon,
           temperature: data.main.temp,
           wind: data.wind.speed,
@@ -59,9 +60,9 @@ let getWeatherData = function (search) {
           // uvi: data.current.uvi,
         });
       }
-      localStorage.setItem("search", JSON.stringify(historyContainer));
-      // console.log(historyContainer);
-      displayWeather(data, search);
+      localStorage.setItem("search", JSON.stringify(history));
+      // console.log(history);
+      displayWeather(data, city);
       return fetch(
         `https://api.openweathermap.org/data/2.5/onecall?lat=${data.coord.lat}&lon=${data.coord.lon}&appid=${key}`
       );
@@ -70,12 +71,12 @@ let getWeatherData = function (search) {
       return res.json();
     })
     .then(function (data) {
-      let historyContainer = JSON.parse(localStorage.getItem("search"));
-      // if (!historyContainer) historyContainer = [];
+      let history = JSON.parse(localStorage.getItem("search"));
+      // if (!history) history = [];
 
       let alreadyIn = true;
 
-      // historyContainer.forEach(function (item) {
+      // history.forEach(function (item) {
       //   let name = item.uvi;
       //   if (name === search) {
       //     alreadyIn = true;
@@ -85,46 +86,57 @@ let getWeatherData = function (search) {
       // no match
       if (alreadyIn) {
         // add JSON to new object
-        historyContainer.push({
+        history.push({
           days: data.daily,
           uvi: data.current.uvi,
         });
       }
-      localStorage.setItem("search", JSON.stringify(historyContainer));
-      console.log(historyContainer);
-      // let weatherSearch = JSON.stringify(historyContainer);
+      localStorage.setItem("search", JSON.stringify(history));
+      // console.log(history);
+      // let weatherSearch = JSON.stringify(history);
       // document.getElementById("weather").innerHTML = weatherSearch;
 
-      displayWeather(data, search);
+      displayWeather(data, city);
     });
   // .catch(function (err) {
   //   alert("ERROR!");
   // });
-  let weather = historyContainer;
 
-  let displayWeather = function (city, searchWeather) {
-    console.log(weather, "weather", city.data, "weather data");
-    console.log(searchWeather, "searchWeather");
+  // let weather = Object.keys(history);
+  // for (let i = 0, len = weather.length; i < len; i++) {
+  //   console.log(history[i]);
+  // }
+  // let history = weather;
+
+  let displayWeather = function (cityData, searchWeather) {
+    // let history = city.key;
+    cityData = JSON.stringify(history);
+    console.log(cityData);
+
+    // key = key.length;
+    console.log("city data: " + cityData, "length: " + cityData.length);
+    // console.log("type: " + typeof history);
+    console.log("city name: " + searchWeather);
     if (city.length === 0) {
-      weatherContainerEl.textContent = "NOTHING";
+      weatherContainerEl.textContent = history;
       return;
     }
     weatherSearchTermEl.textContent = searchWeather;
 
-    for (let i = 0; i < weather.length; i++) {
-      let tempName = weather[i];
-      console.log(tempName);
+    for (let data in history) {
+      // let tempName = data;
+      // console.log(`${data}: ${JSON.stringify(history[data])}`);
 
       let weatherEl = document.createElement("div");
-      weatherEl.classList = "col-lg-4 card m-3 p-2 text-center";
+      weatherEl.classList = "col-lg-8 card m-1 p-2 text-center";
 
       let titleEl = document.createElement("span");
-      titleEl.textContent = tempName;
+      titleEl.textContent = data;
 
       weatherEl.appendChild(titleEl);
 
       let displayEl = document.createElement("p");
-      displayEl.classList = "col-lg-4 m-3 p-2 text-center";
+      displayEl.classList = "col-12";
 
       weatherEl.appendChild(displayEl);
 
