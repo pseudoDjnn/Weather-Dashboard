@@ -6,6 +6,9 @@ let weatherContainerEl = document.querySelector("#weathers-container");
 let weatherSearchTermEl = document.querySelector("#weather-search-term");
 
 let history = JSON.parse(localStorage.getItem("search")) || [];
+// history.forEach(function (citySearchField) {
+//   displayWeather(citySearchField.data);
+// });
 
 // let saveHistory = function () {
 // };
@@ -118,10 +121,10 @@ let getWeatherData = function (city) {
     // console.log("type: " + typeof history);
     console.log("city name: " + searchWeather);
     if (city.length === 0) {
-      weatherContainerEl.textContent = history;
+      weatherContainerEl.textContent = cityData;
       return;
     }
-    weatherSearchTermEl.textContent = searchWeather;
+    weatherSearchTermEl.innerText = searchWeather;
 
     for (let data in history) {
       // let tempName = data;
@@ -130,6 +133,13 @@ let getWeatherData = function (city) {
       let weatherEl = document.createElement("div");
       weatherEl.classList = "col-lg-8 card m-1 p-2 text-center";
 
+      let tempEl = document.createElement("p");
+      tempEl.setAttribute(
+        "src",
+        "https://openweathermap.org/img/wn/" + cityData.temperature + "@2x.png"
+      );
+      tempEl.textContent = `Temp: ${cityData.temperature} °F`;
+
       let titleEl = document.createElement("span");
       titleEl.textContent = data;
 
@@ -137,6 +147,7 @@ let getWeatherData = function (city) {
 
       let displayEl = document.createElement("p");
       displayEl.classList = "col-12";
+      displayEl.textContent = data.weather;
 
       weatherEl.appendChild(displayEl);
 
