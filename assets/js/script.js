@@ -100,17 +100,19 @@ let getWeatherData = function (search) {
   // .catch(function (err) {
   //   alert("ERROR!");
   // });
+  let weather = historyContainer;
 
-  let displayWeather = function (weather, searchWeather) {
-    // let weatherArray = weatherArray.push(historyContainer);
-    // console.log(weatherArray);
-    console.log(weather, searchWeather);
-    // console.log(searchCity
+  let displayWeather = function (city, searchWeather) {
+    console.log(weather, "weather", city.data, "weather data");
+    console.log(searchWeather, "searchWeather");
+    if (city.length === 0) {
+      weatherContainerEl.textContent = "NOTHING";
+      return;
+    }
     weatherSearchTermEl.textContent = searchWeather;
-    weatherContainerEl.textContent = "";
 
     for (let i = 0; i < weather.length; i++) {
-      let tempName = weather[i].data;
+      let tempName = weather[i];
       console.log(tempName);
 
       let weatherEl = document.createElement("div");
@@ -121,8 +123,8 @@ let getWeatherData = function (search) {
 
       weatherEl.appendChild(titleEl);
 
-      let displayEl = document.createElement("span");
-      displayEl.classList = "col-lg-4 card m-3 p-2 text-center";
+      let displayEl = document.createElement("p");
+      displayEl.classList = "col-lg-4 m-3 p-2 text-center";
 
       weatherEl.appendChild(displayEl);
 
