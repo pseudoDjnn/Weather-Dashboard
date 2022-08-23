@@ -4,9 +4,9 @@ const apiKey = "8a42d43f7d7dc180da5b1e51890e67dc";
 //
 var cityFormEl = document.querySelector("#user-form");
 var cityInputEl = document.querySelector("#cityname");
-var weatherContainerEl = document.querySelector("#weathers-container");
+var forecasts = document.querySelector("#weathers-container");
 var weatherSearchTermEl = document.querySelector("#weather-search-term");
-var forecastEl = document.querySelector(".forecast");
+// var forecastEl = document.querySelector(".forecast");
 // let searchButtonEl = document.querySelector("search-history");
 
 var history = JSON.parse(localStorage.getItem("search")) || [];
@@ -26,7 +26,7 @@ clickHandler = function (event) {
 
   if (cityname) {
     getWeatherData(cityname);
-    weatherContainerEl.textContent = "";
+    forecasts.textContent = "";
     cityInputEl.value = "";
   } else {
     alert("PLEASE DONT USE WHEN FINISHED!!!!!");
@@ -63,52 +63,67 @@ getWeatherData = function (city) {
     .then(function (data) {
       document.querySelector("#uv").textContent = " UVI " + data.current.uvi;
 
-      weatherContainerEl.textContent = "";
+      forecasts.textContent = "";
       for (var i = 0; i < 5; i++) {
-        // forecastFive.classList = "col-lg-8 card m-1 p-2 text-center";
-        var forecastFive = document.createElement("span");
-        forecastFive.setAttribute(
-          "class",
-          "card-body p-2 mb-4 justify-space-between"
-        );
-        weatherContainerEl.append(forecastFive);
+        // card container for the weather forecast
+        // let card = document.createElement("div");
+        // card.setAttribute("class", "card-body");
 
-        var temp = document.createElement("p");
-        // temp.setAttribute("class", "row");
-        temp.textContent = "Temp:" + data.daily[i].temp.day;
-        // temp.setAttribute("class", forecastFive);
-        forecastFive.append(temp);
-        weatherContainerEl.append(temp);
+        // fiveDayForecast.classList = "col-lg-8 card m-1 p-2 text-center";
+        var fiveDayForecast = document.createElement("div");
+        fiveDayForecast.setAttribute("class", "card");
+        fiveDayForecast.setAttribute("style", "width: 9rem;");
+        forecasts.append(fiveDayForecast);
 
-        var wind = document.createElement("p");
-        wind.textContent = "Wind:" + data.daily[i].wind_speed;
-        forecastFive.append(wind);
-        weatherContainerEl.append(wind);
-
-        var humidity = document.createElement("p");
-        humidity.textContent = "Humidity:" + data.daily[i].humidity + "%";
-        forecastFive.append(humidity);
-        weatherContainerEl.append(humidity);
-
-        var uv = document.createElement("p");
-        uv.textContent = "UV: " + data.daily[i].uvi;
-        forecastFive.append(uv);
-        weatherContainerEl.append(uv);
+        // var fiveDayDescription = document.createElement("span");
+        // var desc = data.weather[0].description;
+        // fiveDayDescription.setAttribute("class", "justify-content");
+        // fiveDayDescription.textContent = desc;
+        // fiveDayForecast.append(fiveDayDescription);
 
         var iconImage = document.createElement("img");
         var icon = data.daily[i].weather[0].icon;
+        iconImage.setAttribute("class", "card-img-top");
         iconImage.setAttribute(
           "src",
           "https://openweathermap.org/img/wn/" + icon + "@2x.png"
         );
         // console.log("https://openweathermap.org/img/wn/" + icon + "@2x.png");
-        forecastFive.append(iconImage);
         iconImage.setAttribute(
           "style",
-          "width:50px; height:45px; background: white;"
+          "width: auto; height: auto; background: black;"
         );
+        fiveDayForecast.append(iconImage);
 
-        // weatherContainerEl.append(data);
+        var fiveDayTemp = document.createElement("span");
+        var temp = data.daily[i].temp.day;
+        fiveDayTemp.setAttribute("class", "justify-space-between");
+        fiveDayTemp.textContent = "Temp:" + temp;
+        fiveDayForecast.append(fiveDayTemp);
+
+        var fiveDayWind = document.createElement("span");
+        var wind = data.daily[i].wind_speed;
+        fiveDayWind.setAttribute("class", "justifty-space-between");
+        fiveDayWind.textContent = "Wind:" + wind;
+        fiveDayForecast.append(fiveDayWind);
+        // fiveDayWind.append(fiveDayForecast);
+        // forecasts.append(fiveDayWind);
+
+        var fiveDayHumidity = document.createElement("span");
+        var humidity = data.daily[i].humidity;
+        fiveDayHumidity.setAttribute("class", "card-text");
+        fiveDayHumidity.textContent = "Humidity:" + humidity + "%";
+        fiveDayForecast.append(fiveDayHumidity);
+        // forecasts.append(humidity);
+
+        var fiveUv = document.createElement("span");
+        var uv = data.daily[i].uvi;
+        fiveUv.setAttribute("class", "card-text");
+        fiveUv.textContent = "UV: " + uv;
+        fiveDayForecast.append(fiveUv);
+        // forecasts.append(uv);
+
+        // forecasts.append(data);
       }
       console.log(data);
     });
@@ -131,7 +146,7 @@ getWeatherData = function (city) {
   // // console.log("type: " + typeof history);
   // console.log("city name: " + city);
   // if (city.length === 0) {
-  //   weatherContainerEl.textContent = data;
+  //   forecasts.textContent = data;
   //   return;
   // }
   // weatherSearchTermEl.innerText = city;
@@ -148,7 +163,7 @@ getWeatherData = function (city) {
   //   displayEl.textContent = data;
   //   weatherEl.appendChild(displayEl);
   // weatherSearchTermEl.appendChild(weatherEl);
-  // weatherContainerEl.appendChild(weatherEl);
+  // forecasts.appendChild(weatherEl);
 };
 // };
 // };
