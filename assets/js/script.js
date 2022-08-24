@@ -45,7 +45,7 @@ function weatherApp() {
         res.data.weather[0].description.toUpperCase();
       todaysTemp.innerText = `Temp: ${res.data.main.temp} °F`;
       todaysHumi.innerText = `Humidity: ${res.data.main.humidity} %`;
-      todaysWind.innerText = `Wind: ${res.data.wind_speed} mph`;
+      todaysWind.innerText = `Wind: ${res.data.wind.speed} mph`;
 
       //Grab second set of weather data from openweathermap.org/
       let latitude = res.data.coord.lat;
@@ -77,13 +77,14 @@ function weatherApp() {
         apiKey +
         "&units=imperial";
       axios.get(forecastQueryURL).then(function (res) {
+        console.log(res);
         fiveDayForecast.classList.remove("d-none");
 
         // setup five day forecast
         const fiveDay = document.querySelectorAll(".forecast");
-        console.log(fiveDay);
+        // console.log(fiveDay);
         for (let i = 0; i < fiveDay.length; i++) {
-          console.log("fiveDay", fiveDay + "fiveDay.length", fiveDay.length);
+          // console.log("fiveDay", fiveDay + "fiveDay.length", fiveDay.length);
           fiveDay[i].innerHTML = "";
           let forecastIndex = i * 8 + 4;
           let fiveDayDate = new Date(res.data.list[forecastIndex].dt * 1000);
@@ -116,6 +117,10 @@ function weatherApp() {
           forecastHumidity.innerText =
             "Humidity: " + res.data.list[forecastIndex].main.humidity + "%";
           fiveDay[i].append(forecastHumidity);
+          let forecastWind = document.createElement("p");
+          forecastWind.innerText =
+            "Wind: " + res.data.list[forecastIndex].wind.speed + " mph";
+          fiveDay[i].append(forecastWind);
         }
       });
     });
@@ -147,7 +152,7 @@ function weatherApp() {
       const historyItem = document.createElement("input");
       historyItem.setAttribute("type", "text");
       historyItem.setAttribute("readonly", true);
-      historyItem.setAttribute("class", "form-control d-block bg-white");
+      historyItem.setAttribute("class", "form-control d-block bg-info");
       historyItem.setAttribute("value", savedSearchHistory[i]);
       historyItem.addEventListener("click", function () {
         getWeatherData(historyItem.value);
