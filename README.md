@@ -6,14 +6,14 @@ Offer up a current and five day weather forecast for the week showing off temper
 
 ## Built With
 
--HTML
--BootStrap
--openweather API
--Javascript
+- HTML
+- BootStrap
+- openweather API
+- Javascript
 
 # Website
 
-https://pseudodjnn.github.io/Weather-Dashboard/
+</>
 
 ![weather](https://user-images.githubusercontent.com/105378214/186509571-b6fcf73d-989e-4ecf-910c-074fc8de11e2.png)
 
