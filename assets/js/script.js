@@ -48,9 +48,9 @@ function weatherApp() {
       todaysWind.innerText = `Wind: ${res.data.wind_speed} mph`;
 
       //Grab second set of weather data from openweathermap.org/
-      // let latitude = res.data.coord.lat;
-      // let longitude = res.data.coord.lon;
-      let apiUV = `https://api.openweathermap.org/data/2.5/onecall?lat=${res.data.coord.lat}&lon=${res.data.coord.lon}&appid=${apiKey}&units=imperial`;
+      let latitude = res.data.coord.lat;
+      let longitude = res.data.coord.lon;
+      let apiUV = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=imperial&cnt=1`;
       axios.get(apiUV).then(function (res) {
         console.log(res);
         let uvCard = document.createElement("span");
@@ -63,8 +63,8 @@ function weatherApp() {
         } else {
           uvCard.setAttribute("class", "badge badge-danger");
         }
-        console.log(res.data.current.uvi);
-        uvCard.innerText = res.data.daily;
+        // console.log(res.data.current.uvi);
+        uvCard.innerText = res.data.current.uvi;
         todaysUV.innerText = "UV Index of: ";
         todaysUV.append(uvCard);
       });
@@ -74,7 +74,8 @@ function weatherApp() {
         "https://api.openweathermap.org/data/2.5/forecast?id=" +
         cityID +
         "&appid=" +
-        apiKey;
+        apiKey +
+        "&units=imperial";
       axios.get(forecastQueryURL).then(function (res) {
         fiveDayForecast.classList.remove("d-none");
 
@@ -102,10 +103,10 @@ function weatherApp() {
               res.data.list[forecastIndex].weather[0].icon +
               "@2x.png"
           );
-          // forecastIcon.setAttribute(
-          // "alt",
-          // res.data.list[fiveDayForecastIndex].weather[0].description
-          // );
+          forecastIcon.setAttribute(
+            "alt",
+            res.data.list[forecastIndex].weather[0].description
+          );
           fiveDay[i].append(forecastIcon);
           let forecastTemp = document.createElement("p");
           forecastTemp.innerText =
